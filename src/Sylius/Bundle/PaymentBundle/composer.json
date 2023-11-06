@@ -29,7 +29,8 @@
         "php": "^8.0",
         "sylius/payment": "^1.13",
         "sylius/resource-bundle": "^1.9",
-        "symfony/framework-bundle": "^5.4.21 || ^6.0"
+        "symfony/framework-bundle": "^5.4.21 || ^6.0",
+        "ramsey/uuid-doctrine": "^2.0"
     },
     "conflict": {
         "doctrine/orm": "2.15.2",
