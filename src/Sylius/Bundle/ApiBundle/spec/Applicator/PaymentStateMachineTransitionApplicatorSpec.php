@@ -38,6 +38,17 @@ final class PaymentStateMachineTransitionApplicatorSpec extends ObjectBehavior
         $this->complete($payment);
     }
 
+    function it_process_payment(
+        StateMachineFactoryInterface $stateMachineFactory,
+        PaymentInterface $payment,
+        WinzouStateMachine $stateMachine,
+    ): void {
+        $stateMachineFactory->get($payment, PaymentTransitions::GRAPH)->willReturn($stateMachine);
+        $stateMachine->apply(PaymentTransitions::TRANSITION_PROCESS)->shouldBeCalled();
+
+        $this->process($payment);
+    }
+
     function it_uses_the_new_state_machine_abstraction_if_passed(
         StateMachineInterface $stateMachine,
         PaymentInterface $payment,
