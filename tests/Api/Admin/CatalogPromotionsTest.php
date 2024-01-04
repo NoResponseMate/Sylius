@@ -125,6 +125,71 @@ final class CatalogPromotionsTest extends JsonApiTestCase
     }
 
     /** @test */
+    public function it_removes_duplicated_scope_configuration_values_when_creating(): void
+    {
+        $this->loadFixturesFromFiles([
+            'authentication/api_administrator.yaml',
+            'channel.yaml',
+            'tax_category.yaml',
+            'shipping_category.yaml',
+            'product/product_variant.yaml',
+        ]);
+        $header = array_merge($this->logInAdminUser('api@example.com'), self::CONTENT_TYPE_HEADER);
+
+        $this->client->request(
+            method: 'POST',
+            uri: '/api/v2/admin/catalog-promotions',
+            server: $header,
+            content: json_encode([
+                'name' => 'T-Shirts discount',
+                'code' => 'tshirts_discount',
+                'startDate' => '2022-01-01',
+                'endDate' => '2022-01-02',
+                'channels' => [
+                    '/api/v2/admin/channels/WEB',
+                ],
+                'actions' => [
+                    [
+                        'type' => PercentageDiscountPriceCalculator::TYPE,
+                        'configuration' => [
+                            'amount' => 0.5,
+                        ],
+                    ],
+                ],
+                'scopes' => [
+                    [
+                        'type' => InForVariantsScopeVariantChecker::TYPE,
+                        'configuration' => [
+                            'variants' => [
+                                'MUG',
+                                'MUG',
+                                'MUG',
+                                'MUG',
+                                'MUG',
+                                'MUG',
+                                'MUG',
+                            ],
+                        ],
+                    ],
+                ],
+                'translations' => ['en_US' => [
+                    'label' => 'T-Shirts discount',
+                    'description' => '50% discount on every T-Shirt',
+                ]],
+                'enabled' => true,
+                'exclusive' => false,
+                'priority' => 100,
+            ], \JSON_THROW_ON_ERROR),
+        );
+
+        $this->assertResponse(
+            $this->client->getResponse(),
+            'admin/catalog_promotion/post_catalog_promotion_response',
+            Response::HTTP_CREATED,
+        );
+    }
+
+    /** @test */
     public function it_does_not_create_a_catalog_promotion_without_required_data(): void
     {
         $this->loadFixturesFromFiles(['authentication/api_administrator.yaml']);
@@ -409,6 +474,62 @@ final class CatalogPromotionsTest extends JsonApiTestCase
                         'type' => InForVariantsScopeVariantChecker::TYPE,
                         'configuration' => [
                             'variants' => [
+                                'MUG',
+                            ],
+                        ],
+                    ],
+                ],
+                'channels' => [
+                    '/api/v2/admin/channels/MOBILE',
+                ],
+                'translations' => ['en_US' => [
+                    '@id' => sprintf('/api/v2/admin/catalog-promotion-translations/%s', $catalogPromotion->getTranslation('en_US')->getId()),
+                    'label' => 'T-Shirts discount',
+                ]],
+                'enabled' => true,
+                'exclusive' => false,
+                'priority' => 1000,
+            ], \JSON_THROW_ON_ERROR),
+        );
+
+        $this->assertResponse(
+            $this->client->getResponse(),
+            'admin/catalog_promotion/put_catalog_promotion_response',
+            Response::HTTP_OK,
+        );
+    }
+
+    /** @test */
+    public function it_removes_duplicated_scope_configuration_values_when_updating(): void
+    {
+        $catalogPromotion = $this->loadFixturesAndGetCatalogPromotion();
+        $header = array_merge($this->logInAdminUser('api@example.com'), self::CONTENT_TYPE_HEADER);
+
+        $this->client->request(
+            method: 'PUT',
+            uri: sprintf('/api/v2/admin/catalog-promotions/%s', $catalogPromotion->getCode()),
+            server: $header,
+            content: json_encode([
+                'name' => 'T-Shirts discount',
+                'code' => 'new_code',
+                'actions' => [
+                    [
+                        'type' => PercentageDiscountPriceCalculator::TYPE,
+                        'configuration' => [
+                            'amount' => 0.4,
+                        ],
+                    ],
+                ],
+                'scopes' => [
+                    [
+                        'type' => InForVariantsScopeVariantChecker::TYPE,
+                        'configuration' => [
+                            'variants' => [
+                                'MUG',
+                                'MUG',
+                                'MUG',
+                                'MUG',
+                                'MUG',
                                 'MUG',
                             ],
                         ],
