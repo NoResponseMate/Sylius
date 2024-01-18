@@ -17,7 +17,7 @@ use Sylius\Component\Channel\Model\ChannelInterface as BaseChannelInterface;
 use Sylius\Component\Channel\Model\ChannelsAwareInterface;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
-use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -48,9 +48,9 @@ final class ChannelCodeCollectionValidator extends ConstraintValidator
         }
 
         $object = $this->context->getRoot();
-
-        if ($object instanceof Form) {
-            $object = $object->getNormData();
+        if ($object instanceof FormInterface) {
+            // Ignore automatic post submit form validation
+            return;
         }
 
         if (!$object instanceof ChannelsAwareInterface) {

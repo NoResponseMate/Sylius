@@ -44,7 +44,7 @@ final class ChannelCodeCollectionValidatorSpec extends ObjectBehavior
     ): void {
         $this
             ->shouldThrow(UnexpectedTypeException::class)
-            ->during('validate', [[], $constraint])
+            ->during('validate', [['test' => ['test']], $constraint])
         ;
     }
 
@@ -52,7 +52,7 @@ final class ChannelCodeCollectionValidatorSpec extends ObjectBehavior
     {
         $this
             ->shouldThrow(UnexpectedValueException::class)
-            ->during('validate', ['', new ChannelCodeCollection()])
+            ->during('validate', ['test', new ChannelCodeCollection()])
         ;
     }
 
@@ -63,53 +63,25 @@ final class ChannelCodeCollectionValidatorSpec extends ObjectBehavior
 
         $this
             ->shouldThrow(\LogicException::class)
-            ->during('validate', [[], new ChannelCodeCollection(['validateAgainstAllChannels' => false])])
+            ->during('validate', [['test' => ['test']], new ChannelCodeCollection(['validateAgainstAllChannels' => false])])
         ;
     }
 
-    function it_retrieves_an_object_from_value_if_value_is_form_and_validates_collections_for_local_channels(
+    function it_does_nothing_when_context_root_is_a_form_and_validates_collections_for_local_channels(
         ChannelRepositoryInterface $channelRepository,
-        ChannelInterface $channelMobile,
-        ChannelInterface $channelWeb,
-        ChannelsAwareInterface $channelsAware,
-        ContextualValidatorInterface $contextualValidator,
         ExecutionContextInterface $context,
         Form $form,
-        ValidatorInterface $validator,
     ): void {
-        $channelWeb->getCode()->willReturn('WEB');
-        $channelMobile->getCode()->willReturn('MOBILE');
-
-        $channelsAware->getChannels()->willReturn(new ArrayCollection([
-            $channelMobile->getWrappedObject(),
-            $channelWeb->getWrappedObject(),
-        ]));
-
         $context->getRoot()->willReturn($form);
-        $form->getNormData()->willReturn($channelsAware);
 
         $constraints = [new NotBlank(), new Type('numeric')];
-        $groups = ['Default', 'test_group'];
-        $value = ['one', 'two'];
-
-        $collection = new Collection(
-            [
-                'WEB' => $constraints,
-                'MOBILE' => $constraints,
-            ],
-            $groups,
-        );
 
         $channelRepository->findAll()->shouldNotBeCalled();
+        $context->getValidator()->shouldNotBeCalled();
 
-        $context->getValidator()->willReturn($validator);
-        $validator->inContext($context)->willReturn($contextualValidator);
-
-        $contextualValidator->validate($value, $collection, $groups)->willReturn($contextualValidator)->shouldBeCalled();
-
-        $this->validate($value, new ChannelCodeCollection([
+        $this->validate(['one', 'two'], new ChannelCodeCollection([
             'constraints' => $constraints,
-            'groups' => $groups,
+            'groups' => ['Default', 'test_group'],
         ]));
     }
 
