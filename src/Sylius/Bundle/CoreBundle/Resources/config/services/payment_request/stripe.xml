@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ This file is part of the Sylius package.
+
+ (c) Sylius Sp. z o.o.
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+
+-->
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <defaults public="true" />
+        <service id="stripe_client" class="Stripe\StripeClient">
+            <argument type="string">sk_test_51Ok3jVDDNLE1q4Sbk0zhR88GqIbABvu3sDvhVK7w8WhRm6u4mFVShZQHyFei69o0lyY74u4DaAFoLM0wW3EV2ork00oNhiQPqN</argument>
+        </service>
+
+        <service id="sylius.payment_request.command_provider.stripe" class="Sylius\Bundle\CoreBundle\PaymentRequest\CommandProvider\PaymentRequestTypeCommandProvider">
+            <argument type="tagged_locator" tag="sylius.payment_request.command_provider.stripe" index-by="type" />
+            <tag name="sylius.payment_request.command_provider" factory="stripe" priority="100" />
+        </service>
+
+        <!--    Authorize    -->
+        <service id="sylius.payment_request.command_provider.stripe.authorize" class="Sylius\Bundle\CoreBundle\PaymentRequest\CommandProvider\Stripe\AuthorizePaymentRequestCommandProvider">
+            <tag name="sylius.payment_request.command_provider.stripe" type="authorize" />
+        </service>
+
+        <service id="sylius.payment_request.stripe.authorize" class="Sylius\Bundle\CoreBundle\PaymentRequest\CommandHandler\Stripe\AuthorizePaymentRequestHandler">
+            <argument type="service" id="stripe_client" />
+            <argument type="service" id="sylius.repository.payment_request" />
+            <argument type="service" id="sylius_abstraction.state_machine.composite" />
+            <tag name="messenger.message_handler" bus="sylius.command_bus" />
+            <tag name="messenger.message_handler" bus="sylius_default.bus" />
+        </service>
+
+        <!--    Capture    -->
+        <service id="sylius.payment_request.command_provider.stripe.capture" class="Sylius\Bundle\CoreBundle\PaymentRequest\CommandProvider\Stripe\CapturePaymentRequestCommandProvider">
+            <tag name="sylius.payment_request.command_provider.stripe" type="capture" />
+        </service>
+
+        <service id="sylius.payment_request.stripe.capture" class="Sylius\Bundle\CoreBundle\PaymentRequest\CommandHandler\Stripe\CapturePaymentRequestHandler">
+            <argument type="service" id="stripe_client" />
+            <argument type="service" id="sylius.repository.payment_request" />
+            <argument type="service" id="sylius_abstraction.state_machine.composite" />
+            <tag name="messenger.message_handler" bus="sylius.command_bus" />
+            <tag name="messenger.message_handler" bus="sylius_default.bus" />
+        </service>
+    </services>
+</container>

@@ -120,6 +120,14 @@ sylius_fixtures:
                                 channels:
                                     - 'FASHION_WEB'
                                 enabled: true
+                            stripe:
+                                code: 'stripe'
+                                name: 'Stripe'
+                                channels:
+                                    - 'FASHION_WEB'
+                                enabled: true
+                                gatewayName: 'stripe'
+                                gatewayFactory: 'stripe'
 
                 shipping_method:
                     options:

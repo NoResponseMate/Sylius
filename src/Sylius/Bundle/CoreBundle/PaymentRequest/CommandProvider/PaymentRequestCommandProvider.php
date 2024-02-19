@@ -54,7 +54,7 @@ final class PaymentRequestCommandProvider implements PaymentRequestCommandProvid
         $factoryName = $gatewayConfig->getConfig()['factory'] ?? $gatewayConfig->getFactoryName();
 
         /** @var PaymentRequestCommandProviderInterface $provider */
-        $provider = $this->locator->get($factoryName);
+        $provider = $this->locator->get('stripe');
 
         return $provider;
     }
