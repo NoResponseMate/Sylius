@@ -25,7 +25,7 @@ final class ExcludeTaxonsFromShowingLowestPriceInputElement extends Element impl
     public function __construct(
         Session $session,
         MinkParameters|array $minkParameters = [],
-        private AutocompleteHelperInterface $autocompleteHelper, // TODO: make it static fcs //
+        private AutocompleteHelperInterface $autocompleteHelper,
     ) {
         parent::__construct($session, $minkParameters);
     }
@@ -34,14 +34,14 @@ final class ExcludeTaxonsFromShowingLowestPriceInputElement extends Element impl
     {
         $excludeTaxonElement = $this->getElement('taxons_excluded_from_showing_lowest_price')->getParent();
 
-        $this->autocompleteHelper->select($this->getDriver(), $excludeTaxonElement->getXpath(), $taxon->getName());
+        $this->autocompleteHelper->selectByName($this->getDriver(), $excludeTaxonElement->getXpath(), $taxon->getName());
     }
 
     public function removeExcludedTaxon(TaxonInterface $taxon): void
     {
         $excludeTaxonElement = $this->getElement('taxons_excluded_from_showing_lowest_price')->getParent();
 
-        $this->autocompleteHelper->remove($this->getDriver(), $excludeTaxonElement->getXpath(), $taxon->getName());
+        $this->autocompleteHelper->removeByName($this->getDriver(), $excludeTaxonElement->getXpath(), $taxon->getName());
     }
 
     public function hasTaxonExcluded(TaxonInterface $taxon): bool

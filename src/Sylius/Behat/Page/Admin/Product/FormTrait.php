@@ -144,7 +144,7 @@ trait FormTrait
     private function selectAttributeToBeAdded(string $attributeName): void
     {
         $driver = $this->getDriver();
-        $this->autocompleteHelper->select(
+        $this->autocompleteHelper->selectByName(
             $driver,
             $this->getElement('product_attribute_input')->getXpath(),
             $attributeName,

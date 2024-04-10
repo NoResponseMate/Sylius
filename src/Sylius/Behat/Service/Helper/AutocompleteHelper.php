@@ -32,6 +32,7 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
 
     public function search(DriverInterface $driver, string $selector, string $searchString): mixed
     {
+        $selector = str_replace('"', '\'', $selector);
         $driver->executeScript(<<<SCRIPT
             (function () {
                 let element = document.evaluate("{$selector}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
@@ -55,15 +56,16 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
                 let element = document.evaluate("{$selector}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
                 let searchResults = [];
 
-                element.parentElement.querySelectorAll('[data-selectable]').forEach((node) => searchResults[node.textContent] = node.dataset.value);
+                element.parentElement.querySelectorAll('[data-selectable]').forEach((node) => searchResults[node.dataset.value] = node.textContent);
 
                 return searchResults;
             })();
         SCRIPT);
     }
 
-    public function select(DriverInterface $driver, string $selector, string $value): void
+    public function selectByValue(DriverInterface $driver, string $selector, string $value): void
     {
+        $selector = str_replace('"', '\'', $selector);
         $foundItems = $this->search($driver, $selector, $value);
 
         if (!array_key_exists($value, $foundItems)) {
@@ -74,15 +76,34 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
             (function () {
                 let element = document.evaluate("{$selector}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
-                element.tomselect.addItem('{$foundItems[$value]}');
+                element.tomselect.addItem('{$value}');
                 element.tomselect.refreshOptions();
             })();
         SCRIPT);
     }
 
-    public function remove(DriverInterface $driver, string $selector, string $value): void
+    public function selectByName(DriverInterface $driver, string $selector, string $name): void
     {
-        $foundItems = $this->getSelectedItems($driver, $selector);
+        $selector = str_replace('"', '\'', $selector);
+        $foundItems = array_flip($this->search($driver, $selector, $name));
+
+        if (!array_key_exists($name, $foundItems)) {
+            throw new \InvalidArgumentException(sprintf('Could not find "%s" in the autocomplete', $name));
+        }
+
+        $driver->executeScript(<<<SCRIPT
+            (function () {
+                let element = document.evaluate("{$selector}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                element.tomselect.addItem('{$foundItems[$name]}');
+                element.tomselect.refreshOptions();
+            })();
+        SCRIPT);
+    }
+
+    public function removeByValue(DriverInterface $driver, string $selector, string $value): void
+    {
+        $selector = str_replace('"', '\'', $selector);
+        $foundItems = $this->search($driver, $selector, $value);
 
         if (!in_array($value, $foundItems)) {
             throw new \InvalidArgumentException(sprintf('Could not find "%s" in the autocomplete selected items', $value));
@@ -92,7 +113,26 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
             (function () {
                 let element = document.evaluate("{$selector}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
-                element.tomselect.removeItem('{$foundItems[$value]}');
+                element.tomselect.removeItem('{$value}');
+                element.tomselect.refreshOptions();
+            })();
+        SCRIPT);
+    }
+
+    public function removeByName(DriverInterface $driver, string $selector, string $name): void
+    {
+        $selector = str_replace('"', '\'', $selector);
+        $foundItems = array_flip($this->search($driver, $selector, $name));
+
+        if (!in_array($name, $foundItems)) {
+            throw new \InvalidArgumentException(sprintf('Could not find "%s" in the autocomplete selected items', $name));
+        }
+
+        $driver->executeScript(<<<SCRIPT
+            (function () {
+                let element = document.evaluate("{$selector}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+
+                element.tomselect.removeItem('{$foundItems[$name]}');
                 element.tomselect.refreshOptions();
             })();
         SCRIPT);
