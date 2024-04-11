@@ -15,14 +15,15 @@ namespace Sylius\Bundle\CoreBundle\Form\Type;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Sylius\Bundle\AdminBundle\Form\Type\TaxonAutocompleteChoiceType;
 use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
-use Sylius\Bundle\TaxonomyBundle\Form\Type\TaxonAutocompleteChoiceType;
 use Sylius\Component\Core\Model\ChannelPriceHistoryConfigInterface;
 use Sylius\Component\Core\Model\TaxonInterface;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Webmozart\Assert\Assert;
 
 final class ChannelPriceHistoryConfigType extends AbstractResourceType implements DataMapperInterface
@@ -57,6 +58,10 @@ final class ChannelPriceHistoryConfigType extends AbstractResourceType implement
 
     public function mapDataToForms(mixed $viewData, \Traversable $forms): void
     {
+        if ($viewData instanceof ChannelPriceHistoryConfigInterface) {
+            $taxons = $viewData->getTaxonsExcludedFromShowingLowestPrice();
+        }
+        $formsArray = iterator_to_array($forms);
         $this->propertyPathDataMapper->mapDataToForms($viewData, $forms);
     }
 
@@ -66,12 +71,14 @@ final class ChannelPriceHistoryConfigType extends AbstractResourceType implement
 
         /** @var \Traversable $traversableForms */
         $traversableForms = $forms;
+        /** @var FormInterface[] $forms */
         $forms = iterator_to_array($traversableForms);
 
         $channelPriceHistoryConfig->clearTaxonsExcludedFromShowingLowestPrice();
 
+        $form = $forms['taxonsExcludedFromShowingLowestPrice'];
         /** @var Collection $excludedTaxons */
-        $excludedTaxons = $forms['taxonsExcludedFromShowingLowestPrice']->getData();
+        $excludedTaxons = $forms['taxonsExcludedFromShowingLowestPrice']->getNormData();
 
         /** @var TaxonInterface $taxon */
         foreach ($excludedTaxons as $taxon) {

@@ -4,25 +4,34 @@ declare(strict_types=1);
 
 namespace Sylius\Bundle\AdminBundle\Form\Extension;
 
+use Sylius\Bundle\AdminBundle\Form\Type\TaxonAutocompleteChoiceType;
 use Sylius\Bundle\CoreBundle\Form\Type\ChannelPriceHistoryConfigType;
-use Sylius\Component\Core\Model\Taxon;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\ReversedTransformer;
 
 final class ChannelPriceHistoryConfigTypeExtension extends AbstractTypeExtension
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function __construct(private readonly DataTransformerInterface $taxonsToCodesTransformer)
+    {
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('taxonsExcludedFromShowingLowestPrice', EntityType::class, [
+            ->add('taxonsExcludedFromShowingLowestPrice', TaxonAutocompleteChoiceType::class, [
                 'label' => 'sylius.ui.taxons_for_which_the_lowest_price_is_not_displayed',
                 'required' => false,
-                'class' => Taxon::class,
                 'multiple' => true,
                 'expanded' => false,
-                'autocomplete' => true,
             ])
+        ;
+
+        $builder->get('taxonsExcludedFromShowingLowestPrice')
+            ->addModelTransformer(
+                new ReversedTransformer($this->taxonsToCodesTransformer)
+            )
         ;
     }
 

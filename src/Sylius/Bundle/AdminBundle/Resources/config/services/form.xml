@@ -47,10 +47,12 @@
         </service>
 
         <service id="sylius_admin.form.extension.type.channel" class="Sylius\Bundle\AdminBundle\Form\Extension\ChannelTypeExtension">
+            <argument type="service" id="sylius.repository.taxon" />
             <tag name="form.type_extension" extended-type="Sylius\Bundle\ChannelBundle\Form\Type\ChannelType" priority="50" />
         </service>
 
         <service id="sylius_admin.form.extension.type.channel_price_history_config" class="Sylius\Bundle\AdminBundle\Form\Extension\ChannelPriceHistoryConfigTypeExtension">
+            <argument type="service" id="sylius.form.type.data_transformer.taxons_to_codes" />
             <tag name="form.type_extension" extended-type="Sylius\Bundle\CoreBundle\Form\Type\ChannelPriceHistoryConfigType" priority="100" />
         </service>
 
@@ -62,6 +64,12 @@
         <service id="Sylius\Bundle\AdminBundle\Form\Type\ResetPasswordType">
             <argument>%sylius.form.type.admin.reset_password.validation_groups%</argument>
             <tag name="form.type" />
+        </service>
+
+        <service id="sylius_admin.form.type.taxon_autocomplete_choice" class="Sylius\Bundle\AdminBundle\Form\Type\TaxonAutocompleteChoiceType">
+            <argument>%sylius.model.taxon.class%</argument>
+            <tag name="form.type" />
+            <tag name="ux.entity_autocomplete_field" />
         </service>
     </services>
 </container>
