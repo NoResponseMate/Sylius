@@ -13,13 +13,11 @@ declare(strict_types=1);
 
 namespace Sylius\Bundle\AdminBundle\Twig\Component\ProductAttribute;
 
+use Sylius\Bundle\UiBundle\Twig\Component\LiveCollectionTrait;
 use Sylius\Bundle\UiBundle\Twig\Component\ResourceFormComponentTrait;
 use Sylius\Component\Product\Model\ProductAttributeInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
-use Symfony\UX\LiveComponent\Attribute\LiveAction;
-use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 
 #[AsLiveComponent]
@@ -29,17 +27,10 @@ class FormComponent
     use ResourceFormComponentTrait {
         initialize as public __construct;
     }
+    use LiveCollectionTrait;
 
     #[LiveProp(fieldName: 'type')]
     public ?string $type = null;
-
-    #[LiveAction]
-    public function addCollectionItem(PropertyAccessorInterface $propertyAccessor, #[LiveArg] string $name): void
-    {
-        $propertyPath = $this->fieldNameToPropertyPath($name, $this->formName);
-        $index = count($propertyAccessor->getValue($this->formValues, $propertyPath));
-        $propertyAccessor->setValue($this->formValues, $propertyPath . "[$index]", []);
-    }
 
     protected function createResource(): ProductAttributeInterface
     {
