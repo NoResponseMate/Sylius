@@ -112,11 +112,15 @@ sylius_fixtures:
                             cash_on_delivery:
                                 code: 'cash_on_delivery'
                                 name: 'Cash on delivery'
+                                gatewayConfig:
+                                    'ala': 'ma kota'
                                 channels:
                                     - 'FASHION_WEB'
                             bank_transfer:
                                 code: 'bank_transfer'
                                 name: 'Bank transfer'
+                                gatewayConfig:
+                                    'ala': 'ma kota'
                                 channels:
                                     - 'FASHION_WEB'
                                 enabled: true
