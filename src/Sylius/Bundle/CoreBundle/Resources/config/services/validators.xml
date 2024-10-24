@@ -123,7 +123,7 @@
 
         <service id="sylius.validator.resend_order_confirmation_email_with_valid_order_state" class="Sylius\Bundle\CoreBundle\Validator\Constraints\ResendOrderConfirmationEmailWithValidOrderStateValidator">
             <argument type="service" id="sylius.repository.order" />
-            <argument>%sylius_order.resend_order_confirmation_email.order_states%</argument>
+            <argument type="service" id="sylius.checker.order.confirmation_email_resend" />
             <tag name="validator.constraint_validator" alias="sylius_order_confirmation_with_valid_order_state" />
         </service>
 

@@ -258,6 +258,11 @@
         </service>
         <service id="Sylius\Bundle\CoreBundle\Order\Checker\OrderPromotionsIntegrityCheckerInterface" alias="sylius.checker.order.promotions_integrity" />
 
+        <service id="sylius.checker.order.confirmation_email_resend" class="Sylius\Bundle\CoreBundle\Order\Checker\OrderConfirmationEmailResendChecker">
+            <argument>%sylius_core.resend_order_confirmation_email.order_states%</argument>
+        </service>
+        <service id="Sylius\Bundle\CoreBundle\Order\Checker\OrderConfirmationEmailResendCheckerInterface" alias="sylius.checker.order.confirmation_email_resend" />
+
         <service id="sylius.resetter.user_password.admin" class="Sylius\Bundle\CoreBundle\Security\UserPasswordResetter">
             <argument type="service" id="sylius.repository.admin_user" />
             <argument type="service" id="Sylius\Component\User\Security\PasswordUpdaterInterface" />

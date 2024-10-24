@@ -2,7 +2,6 @@
 # (c) Sylius Sp. z o.o.
 
 imports:
-    - { resource: "@SyliusOrderBundle/Resources/config/app/config.yml" }
     - { resource: "@SyliusPaymentBundle/Resources/config/app/config.yml" }
     - { resource: "@SyliusProductBundle/Resources/config/app/config.yml" }
     - { resource: "@SyliusPromotionBundle/Resources/config/app/config.yml" }
@@ -20,6 +19,9 @@ imports:
 parameters:
     sylius_core.public_dir: "%kernel.project_dir%/web"
     sylius_core.images_dir: "%sylius_core.public_dir%/media/image"
+    sylius_core.resend_order_confirmation_email.order_states:
+        - !php/const Sylius\Component\Order\Model\OrderInterface::STATE_NEW
+        - !php/const Sylius\Component\Order\Model\OrderInterface::STATE_FULFILLED
     locale: en_US
 
 sylius_core:

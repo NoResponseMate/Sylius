@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sylius\Bundle\CoreBundle\Validator\Constraints;
 
 use Sylius\Bundle\CoreBundle\Command\ResendOrderConfirmationEmail;
+use Sylius\Bundle\CoreBundle\Order\Checker\OrderConfirmationEmailResendCheckerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Symfony\Component\Validator\Constraint;
@@ -24,11 +25,10 @@ final class ResendOrderConfirmationEmailWithValidOrderStateValidator extends Con
 {
     /**
      * @param RepositoryInterface<OrderInterface> $orderRepository
-     * @param array<string, string> $orderStatesToAllowResendingConfirmationEmail
      */
     public function __construct(
         private RepositoryInterface $orderRepository,
-        private array $orderStatesToAllowResendingConfirmationEmail,
+        private OrderConfirmationEmailResendCheckerInterface $orderConfirmationEmailResendChecker,
     ) {
     }
 
@@ -48,7 +48,7 @@ final class ResendOrderConfirmationEmailWithValidOrderStateValidator extends Con
             return;
         }
 
-        if (!in_array($order->getState(), $this->orderStatesToAllowResendingConfirmationEmail, true)) {
+        if (!$this->orderConfirmationEmailResendChecker->canBeResent($order)) {
             $this->context->addViolation(
                 $constraint->message,
                 ['%state%' => $order->getState()],

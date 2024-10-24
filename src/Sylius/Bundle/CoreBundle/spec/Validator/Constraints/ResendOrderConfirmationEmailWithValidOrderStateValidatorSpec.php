@@ -16,6 +16,7 @@ namespace spec\Sylius\Bundle\CoreBundle\Validator\Constraints;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Sylius\Bundle\CoreBundle\Command\ResendOrderConfirmationEmail;
+use Sylius\Bundle\CoreBundle\Order\Checker\OrderConfirmationEmailResendCheckerInterface;
 use Sylius\Bundle\CoreBundle\Validator\Constraints\ResendOrderConfirmationEmailWithValidOrderState;
 use Sylius\Component\Order\Model\OrderInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
@@ -25,9 +26,12 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 final class ResendOrderConfirmationEmailWithValidOrderStateValidatorSpec extends ObjectBehavior
 {
-    function let(RepositoryInterface $orderRepository, ExecutionContextInterface $context): void
-    {
-        $this->beConstructedWith($orderRepository, [OrderInterface::STATE_NEW]);
+    function let(
+        RepositoryInterface $orderRepository,
+        OrderConfirmationEmailResendCheckerInterface $orderConfirmationEmailResendChecker,
+        ExecutionContextInterface $context,
+    ): void {
+        $this->beConstructedWith($orderRepository, $orderConfirmationEmailResendChecker);
 
         $this->initialize($context);
     }
@@ -51,11 +55,13 @@ final class ResendOrderConfirmationEmailWithValidOrderStateValidatorSpec extends
 
     function it_does_nothing_if_the_state_is_valid(
         RepositoryInterface $orderRepository,
+        OrderConfirmationEmailResendCheckerInterface $orderConfirmationEmailResendChecker,
         ExecutionContextInterface $context,
         OrderInterface $order,
     ): void {
         $orderRepository->findOneBy(['tokenValue' => 'TOKEN'])->willReturn($order);
-        $order->getState()->willReturn(OrderInterface::STATE_NEW);
+
+        $orderConfirmationEmailResendChecker->canBeResent($order)->willReturn(true);
 
         $context->buildViolation(Argument::any())->shouldNotBeCalled();
 
@@ -78,13 +84,17 @@ final class ResendOrderConfirmationEmailWithValidOrderStateValidatorSpec extends
 
     function it_adds_a_violation_if_order_has_invalid_state(
         RepositoryInterface $orderRepository,
+        OrderConfirmationEmailResendCheckerInterface $orderConfirmationEmailResendChecker,
         OrderInterface $order,
         ExecutionContextInterface $context,
     ): void {
         $constraint = new ResendOrderConfirmationEmailWithValidOrderState();
 
         $orderRepository->findOneBy(['tokenValue' => 'TOKEN'])->willReturn($order);
+
         $order->getState()->willReturn(OrderInterface::STATE_FULFILLED);
+
+        $orderConfirmationEmailResendChecker->canBeResent($order)->willReturn(false);
 
         $context
             ->addViolation($constraint->message, ['%state%' => OrderInterface::STATE_FULFILLED])
