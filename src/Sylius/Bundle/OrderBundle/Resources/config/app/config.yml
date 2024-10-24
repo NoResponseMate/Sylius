@@ -15,4 +15,3 @@ jms_serializer:
 twig:
     globals:
         sylius_order_states_that_allows_to_resend_order_confirmation_email: "%sylius_order.resend_order_confirmation_email.order_states%"
-

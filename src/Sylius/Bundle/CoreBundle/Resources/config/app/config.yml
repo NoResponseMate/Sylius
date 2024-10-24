@@ -32,6 +32,7 @@ imports:
 parameters:
     sylius_core.public_dir: "%kernel.project_dir%/web"
     sylius_core.images_dir: "%sylius_core.public_dir%/media/image"
+    sylius_core.resend_order_confirmation_email.order_states: '%sylius_order.resend_order_confirmation_email.order_states%'
     locale: en_US
 
 sylius_core:
