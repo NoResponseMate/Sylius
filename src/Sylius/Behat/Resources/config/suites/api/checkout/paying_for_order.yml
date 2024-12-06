@@ -44,3 +44,4 @@ default:
 
             filters:
                 tags: "@paying_for_order&&@api"
+            javascript: false
