@@ -92,7 +92,7 @@ jobs:
                     echo "{}" > public/build/app/shop/manifest.json
 
             -   name: Build application
-                uses: SyliusLabs/BuildTestAppAction@v2.3
+                uses: NoResponseMate/BuildTestAppAction@702373be5cf78c8695ff84cbc88917b896d03fcf
                 with:
                     build_type: "sylius"
                     cache_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}"
@@ -182,7 +182,7 @@ jobs:
                 run: composer require --no-update --no-scripts --no-interaction "twig/twig:${{ matrix.twig }}"
 
             -   name: Build application
-                uses: SyliusLabs/BuildTestAppAction@v2.3
+                uses: NoResponseMate/BuildTestAppAction@702373be5cf78c8695ff84cbc88917b896d03fcf
                 with:
                     build_type: "sylius"
                     cache_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}"
@@ -260,7 +260,7 @@ jobs:
                 run: composer require --no-update --no-scripts --no-interaction "twig/twig:${{ matrix.twig }}"
 
             -   name: Build application
-                uses: SyliusLabs/BuildTestAppAction@v2.3
+                uses: NoResponseMate/BuildTestAppAction@702373be5cf78c8695ff84cbc88917b896d03fcf
                 with:
                     build_type: "sylius"
                     cache_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}"
