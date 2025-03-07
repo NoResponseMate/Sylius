@@ -37,6 +37,8 @@ export default class extends Controller {
     }
 
     submit() {
+        this.element.setAttribute('busy', '');
+
         const requestOptions = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },

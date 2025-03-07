@@ -48,9 +48,13 @@ class IndexPage extends BaseIndexPage implements IndexPageInterface
 
     public function savePositions(): void
     {
-        $this->getElement('save_configuration_button')->press();
+        $saveConfigurationButton = $this->getElement('save_configuration_button');
+        $saveConfigurationButton->press();
 
-        $this->getDocument()->waitFor(5, fn () => null === $this->getElement('save_configuration_button')->find('css', '.loading'));
+        $this->getDocument()->waitFor(1, fn () =>
+            $this->hasElement('save_configuration_button') &&
+            !$this->getElement('save_configuration_button')->hasAttribute('busy')
+        );
     }
 
     public function countItemsWithNoName(): int
