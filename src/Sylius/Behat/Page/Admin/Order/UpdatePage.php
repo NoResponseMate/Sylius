@@ -16,6 +16,7 @@ namespace Sylius\Behat\Page\Admin\Order;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Sylius\Behat\Page\Admin\Crud\UpdatePage as BaseUpdatePage;
+use Sylius\Behat\Service\Helper\LiveComponentHelper;
 use Sylius\Component\Addressing\Model\AddressInterface;
 
 class UpdatePage extends BaseUpdatePage implements UpdatePageInterface
@@ -147,6 +148,6 @@ class UpdatePage extends BaseUpdatePage implements UpdatePageInterface
 
     protected function waitForFormUpdate(): void
     {
-        $this->getElement('live_form')->waitFor('5', fn (NodeElement $element) => !$element->hasAttribute('busy'));
+        LiveComponentHelper::waitForComponentReload($this->getElement('live_form'));
     }
 }

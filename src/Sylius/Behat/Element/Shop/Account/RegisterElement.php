@@ -17,6 +17,7 @@ use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ElementNotFoundException;
 use FriendsOfBehat\PageObjectExtension\Element\Element;
 use Sylius\Behat\Service\DriverHelper;
+use Sylius\Behat\Service\Helper\LiveComponentHelper;
 
 class RegisterElement extends Element implements RegisterElementInterface
 {
@@ -106,10 +107,7 @@ class RegisterElement extends Element implements RegisterElementInterface
 
     protected function waitForFormUpdate(): void
     {
-        $form = $this->getElement('form');
-
-        usleep(500000); // we need to sleep, as sometimes the check below is executed faster than the form sets the busy attribute
-        $form->waitFor(1500, fn () => !$form->hasAttribute('busy'));
+        LiveComponentHelper::waitForComponentReload($this->getElement('form'));
     }
 
     /**

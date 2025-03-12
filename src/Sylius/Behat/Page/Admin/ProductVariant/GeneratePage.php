@@ -64,7 +64,6 @@ class GeneratePage extends BaseCreatePage implements GeneratePageInterface
             'channel_pricings' => '#sylius_admin_product_generate_variants_variants_%position% [data-test-channel-pricings]',
             'code' => '#sylius_admin_product_generate_variants_variants_%position% [data-test-code]',
             'delete_button' => '#sylius_admin_product_generate_variants_variants_%position% [data-test-delete-button]',
-            'form' => 'form',
             'generate_button' => '[data-test-generate-button]',
             'price' => '#sylius_admin_product_generate_variants_variants_%position%_channelPricings_%channel_code%_price',
         ]);

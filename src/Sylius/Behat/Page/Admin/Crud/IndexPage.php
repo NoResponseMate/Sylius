@@ -18,6 +18,7 @@ use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Session;
 use Sylius\Behat\Page\SymfonyPage;
 use Sylius\Behat\Service\Accessor\TableAccessorInterface;
+use Sylius\Behat\Service\Helper\LiveComponentHelper;
 use Symfony\Component\Routing\RouterInterface;
 use Webmozart\Assert\Assert;
 
@@ -198,11 +199,7 @@ class IndexPage extends SymfonyPage implements IndexPageInterface
 
     protected function waitForFormUpdate(): void
     {
-        $form = $this->getElement('filters_form');
-        usleep(500000); // we need to sleep, as sometimes the check below is executed faster than the form sets the busy attribute
-        $form->waitFor(1500, function () use ($form) {
-            return !$form->hasAttribute('busy');
-        });
+        LiveComponentHelper::waitForComponentReload($this->getElement('filters_form'));
     }
 
     protected function getDefinedElements(): array

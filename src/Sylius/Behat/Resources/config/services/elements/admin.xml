@@ -16,7 +16,9 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd"
 >
     <services>
-        <service id="sylius.behat.element.admin.crud.form" class="Sylius\Behat\Element\Admin\Crud\FormElement" parent="sylius.behat.element" />
+        <service id="sylius.behat.element.admin.crud.form" class="Sylius\Behat\Element\Admin\Crud\FormElement" parent="sylius.behat.element">
+<!--            <argument type="service" id="Sylius\Behat\Service\Helper\LiveComponentHelperInterface" />-->
+        </service>
 
         <service id="sylius.behat.element.admin.crud.index.search_filter" class="Sylius\Behat\Element\Admin\Crud\Index\SearchFilterElement" parent="sylius.behat.element" />
 

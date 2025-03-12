@@ -20,6 +20,7 @@ use Behat\Mink\Session;
 use FriendsOfBehat\PageObjectExtension\Page\UnexpectedPageException;
 use Sylius\Behat\Page\SymfonyPage;
 use Sylius\Behat\Service\DriverHelper;
+use Sylius\Behat\Service\Helper\LiveComponentHelper;
 use Symfony\Component\Routing\RouterInterface;
 
 class CreatePage extends SymfonyPage implements CreatePageInterface
@@ -79,18 +80,14 @@ class CreatePage extends SymfonyPage implements CreatePageInterface
     protected function getDefinedElements(): array
     {
         return array_merge(parent::getDefinedElements(), [
-            'form' => 'form',
+            'form' => 'form[name]',
             'cancel_button' => '[data-test-cancel-changes-button]',
         ]);
     }
 
     protected function waitForFormUpdate(): void
     {
-        $form = $this->getElement('form');
-        sleep(1); // we need to sleep, as sometimes the check below is executed faster than the form sets the busy attribute
-        $form->waitFor(1500, function () use ($form) {
-            return !$form->hasAttribute('busy');
-        });
+        LiveComponentHelper::waitForComponentReload($this->getElement('form'));
     }
 
     protected function verifyStatusCode(): void

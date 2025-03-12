@@ -128,6 +128,8 @@
 
         <service id="Sylius\Behat\Service\Helper\AutocompleteHelperInterface" class="Sylius\Behat\Service\Helper\AutocompleteHelper" />
 
+        <service id="Sylius\Behat\Service\Helper\LiveComponentHelperInterface" class="Sylius\Behat\Service\Helper\LiveComponentHelper" />
+
         <service id="sylius.behat.java_script_test_helper" class="Sylius\Behat\Service\Helper\JavaScriptTestHelper" >
             <argument>1000000</argument>
             <argument>7</argument>
