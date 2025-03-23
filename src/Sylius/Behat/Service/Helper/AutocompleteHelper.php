@@ -19,7 +19,7 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
 {
     public function getSelectedItems(DriverInterface $driver, string $selector): array
     {
-        $selector = $this->normalizeSelector($selector);
+        $selector = self::normalizeSelector($selector);
         $result = $driver->evaluateScript(<<<SCRIPT
             (function () {
                 let select = document.evaluate("//SELECT[{$selector}]", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
@@ -36,7 +36,7 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
 
     public function search(DriverInterface $driver, string $selector, string $searchString): mixed
     {
-        $selector = $this->normalizeSelector($selector);
+        $selector = self::normalizeSelector($selector);
         $driver->executeScript(<<<SCRIPT
             (function () {
                 let element = document.evaluate("{$selector}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
@@ -69,7 +69,7 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
 
     public function selectByName(DriverInterface $driver, string $selector, string $name): void
     {
-        $selector = $this->normalizeSelector($selector);
+        $selector = self::normalizeSelector($selector);
         $foundItems = array_flip($this->search($driver, $selector, $name));
 
         $value = $this->getValueByPhrase($foundItems, $name);
@@ -79,7 +79,7 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
 
     public function removeByName(DriverInterface $driver, string $selector, string $name): void
     {
-        $selector = $this->normalizeSelector($selector);
+        $selector = self::normalizeSelector($selector);
         $selectedItems = array_flip($this->getSelectedItems($driver, $selector));
 
         $value = $this->getValueByPhrase($selectedItems, $name);
@@ -89,7 +89,7 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
 
     public function selectByValue(DriverInterface $driver, string $selector, string $value): void
     {
-        $selector = $this->normalizeSelector($selector);
+        $selector = self::normalizeSelector($selector);
         $foundItems = $this->search($driver, $selector, $value);
 
         if (!array_key_exists($value, $foundItems)) {
@@ -101,7 +101,7 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
 
     public function removeByValue(DriverInterface $driver, string $selector, string $value): void
     {
-        $selector = $this->normalizeSelector($selector);
+        $selector = self::normalizeSelector($selector);
         $selectedItems = $this->getSelectedItems($driver, $selector);
 
         if (!array_key_exists($value, $selectedItems)) {
@@ -113,7 +113,7 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
 
     public function clear(DriverInterface $driver, string $selector): void
     {
-        $selector = $this->normalizeSelector($selector);
+        $selector = self::normalizeSelector($selector);
         $driver->executeScript(<<<SCRIPT
             (function () {
                 let element = document.evaluate("{$selector}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
@@ -132,6 +132,8 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
                 element.tomselect.refreshOptions();
             })();
         SCRIPT);
+
+        self::waitForCondition($driver, $selector, (string) $value, true);
     }
 
     private function removeItemByValue(DriverInterface $driver, string $selector, int|string $value): void
@@ -143,6 +145,8 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
                 element.tomselect.refreshOptions();
             })();
         SCRIPT);
+
+        self::waitForCondition($driver, $selector, (string) $value, false);
     }
 
     private function getValueByPhrase(array $foundItems, string $phrase): int|string
@@ -156,8 +160,20 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
         throw new \InvalidArgumentException(sprintf('Could not find "%s" in the autocomplete', $phrase));
     }
 
-    private function normalizeSelector(string $selector): string
+    private static function normalizeSelector(string $selector): string
     {
         return str_replace('"', '\'', $selector);
+    }
+
+    private static function waitForCondition(DriverInterface $driver, string $selector, string $value, bool $exists): void
+    {
+        $condition = $exists ? '' : '!';
+        $driver->wait(1000, <<<SCRIPT
+            (function () {
+                let element = document.evaluate("{$selector}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+
+                return {$condition} + element.innerHTML.includes('{$value}');
+            })();
+        SCRIPT);
     }
 }

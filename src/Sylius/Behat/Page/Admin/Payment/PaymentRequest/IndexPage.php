@@ -69,6 +69,6 @@ class IndexPage extends BaseIndexPage implements IndexPageInterface
             $value,
         );
 
-        $this->waitForFormUpdate();
+//        $this->waitForFormUpdate();
     }
 }

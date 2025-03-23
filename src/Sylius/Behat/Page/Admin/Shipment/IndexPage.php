@@ -45,7 +45,7 @@ class IndexPage extends BaseIndexPage implements IndexPageInterface
             $this->getElement('filter_channel')->getXpath(),
             $channelName,
         );
-        $this->waitForFormUpdate();
+//        $this->waitForFormUpdate();
     }
 
     public function chooseShippingMethodFilter(string $shippingMethodName): void
@@ -55,7 +55,7 @@ class IndexPage extends BaseIndexPage implements IndexPageInterface
             $this->getElement('filter_shipping_method')->getXpath(),
             $shippingMethodName,
         );
-        $this->waitForFormUpdate();
+//        $this->waitForFormUpdate();
     }
 
     public function isShipmentWithOrderNumberInPosition(string $orderNumber, int $position): bool

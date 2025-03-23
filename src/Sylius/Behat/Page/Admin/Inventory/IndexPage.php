@@ -50,7 +50,7 @@ class IndexPage extends BaseIndexPage implements IndexPageInterface
             $productName,
         );
 
-        $this->waitForFormUpdate();
+//        $this->waitForFormUpdate();
     }
 
     protected function getDefinedElements(): array

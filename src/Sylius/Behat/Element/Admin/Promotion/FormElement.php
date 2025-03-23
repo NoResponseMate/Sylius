@@ -162,7 +162,7 @@ class FormElement extends BaseFormElement implements FormElementInterface
             );
         }
 
-        $this->waitForFormUpdate();
+//        $this->waitForFormUpdate();
     }
 
     public function selectAutocompleteActionFilterOptions(array $values, string $channelCode, string $filterType): void
@@ -177,7 +177,7 @@ class FormElement extends BaseFormElement implements FormElementInterface
             );
         }
 
-        $this->waitForFormUpdate();
+//        $this->waitForFormUpdate();
     }
 
     public function checkIfRuleConfigurationFormIsVisible(): bool

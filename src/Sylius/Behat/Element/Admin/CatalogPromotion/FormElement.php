@@ -109,7 +109,7 @@ class FormElement extends BaseFormElement implements FormElementInterface
             );
         }
 
-        $this->waitForFormUpdate();
+//        $this->waitForFormUpdate();
     }
 
     public function fillActionOption(string $option, string $value): void
@@ -187,7 +187,7 @@ class FormElement extends BaseFormElement implements FormElementInterface
             );
         }
 
-        $this->waitForFormUpdate();
+//        $this->waitForFormUpdate();
     }
 
     public function removeLastAction(): void

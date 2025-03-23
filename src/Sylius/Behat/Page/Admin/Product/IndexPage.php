@@ -47,7 +47,7 @@ class IndexPage extends CrudIndexPage implements IndexPageInterface
             $taxonName,
         );
 
-        $this->waitForFormUpdate();
+//        $this->waitForFormUpdate();
     }
 
     public function filterByMainTaxon(string $taxonName): void
@@ -58,7 +58,7 @@ class IndexPage extends CrudIndexPage implements IndexPageInterface
             $taxonName,
         );
 
-        $this->waitForFormUpdate();
+//        $this->waitForFormUpdate();
     }
 
     public function chooseChannelFilter(string $channelName): void

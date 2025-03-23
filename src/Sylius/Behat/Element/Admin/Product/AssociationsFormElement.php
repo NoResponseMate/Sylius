@@ -41,7 +41,7 @@ class AssociationsFormElement extends BaseFormElement implements AssociationsFor
                 $associationField->getXpath(),
                 $productName,
             );
-            $this->waitForFormUpdate();
+//            $this->waitForFormUpdate();
         }
     }
 

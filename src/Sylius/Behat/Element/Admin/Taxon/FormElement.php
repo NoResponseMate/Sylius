@@ -76,7 +76,7 @@ class FormElement extends BaseFormElement implements FormElementInterface
             $this->getElement('parent')->getXpath(),
             $taxon->getName(),
         );
-        $this->waitForFormUpdate();
+//        $this->waitForFormUpdate();
     }
 
     public function removeCurrentParent(): void

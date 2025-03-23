@@ -113,7 +113,7 @@ trait FormTrait
             $this->getElement('menu_taxon')->getXpath(),
             $menuTaxon,
         );
-        $this->waitForFormUpdate();
+//        $this->waitForFormUpdate();
     }
 
     public function getTaxCalculationStrategy(): string

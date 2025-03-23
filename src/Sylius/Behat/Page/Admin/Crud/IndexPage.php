@@ -188,13 +188,13 @@ class IndexPage extends SymfonyPage implements IndexPageInterface
         $this->getDocument()->waitFor(1, function () use ($filtersToggle) {
             $accordionCollapse = $filtersToggle->find('css', '.accordion-collapse');
 
-            return null !== $accordionCollapse && !$accordionCollapse->hasClass('collapsing');
+            return null !== $accordionCollapse && $accordionCollapse->hasClass('show');
         });
     }
 
     protected function areFiltersVisible(): bool
     {
-        return !$this->getElement('filters_toggle')->hasClass('collapsed');
+        return $this->getElement('filters_toggle')->hasClass('show');
     }
 
     protected function waitForFormUpdate(): void
