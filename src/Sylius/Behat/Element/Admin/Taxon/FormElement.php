@@ -46,6 +46,7 @@ class FormElement extends BaseFormElement implements FormElementInterface
         $this->expandTranslationAccordion($localeCode);
 
         $this->getElement('name', ['%locale_code%' => $localeCode])->setValue($name);
+        $this->waitForFormUpdate();
     }
 
     public function slugIt(string $slug, string $localeCode): void
@@ -76,7 +77,6 @@ class FormElement extends BaseFormElement implements FormElementInterface
             $this->getElement('parent')->getXpath(),
             $taxon->getName(),
         );
-//        $this->waitForFormUpdate();
     }
 
     public function removeCurrentParent(): void
@@ -88,6 +88,7 @@ class FormElement extends BaseFormElement implements FormElementInterface
     public function getTranslationFieldValue(string $element, string $localeCode): string
     {
         DriverHelper::waitForPageToLoad($this->getSession());
+        $this->expandTranslationAccordion($localeCode);
 
         return $this->getElement($element, ['%locale_code%' => $localeCode])->getValue();
     }

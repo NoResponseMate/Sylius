@@ -167,12 +167,13 @@ final class AutocompleteHelper implements AutocompleteHelperInterface
 
     private static function waitForCondition(DriverInterface $driver, string $selector, string $value, bool $exists): void
     {
-        $condition = $exists ? '' : '!';
+        $condition = sprintf('%selement.innerHTML.includes("%s")', $exists ? '' : '!', $value);
+
         $driver->wait(1000, <<<SCRIPT
             (function () {
-                let element = document.evaluate("{$selector}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                let element = document.evaluate("{$selector}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
-                return {$condition} + element.innerHTML.includes('{$value}');
+                return {$condition};
             })();
         SCRIPT);
     }

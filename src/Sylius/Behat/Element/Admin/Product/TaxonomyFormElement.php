@@ -40,7 +40,6 @@ class TaxonomyFormElement extends BaseFormElement implements TaxonomyFormElement
             $this->getElement('main_taxon')->getXpath(),
             $taxonName,
         );
-//        $this->waitForFormUpdate();
     }
 
     public function getMainTaxon(): ?string

@@ -16,9 +16,15 @@ namespace Sylius\Behat\Page\Shop;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Sylius\Behat\Page\SymfonyPage;
+use Sylius\Behat\Service\Helper\LiveComponentHelper;
 
 abstract class Page extends SymfonyPage implements PageInterface
 {
+    /**
+     * @param array<string, string> $parameters
+     *
+     * @throws ElementNotFoundException
+     */
     public function fillElement(string $value, string $element, array $parameters = []): void
     {
         $foundElement = $this->getElement($element, $parameters);
@@ -27,6 +33,8 @@ abstract class Page extends SymfonyPage implements PageInterface
 
     /**
      * @param array<string, string> $parameters
+     *
+     * @throws ElementNotFoundException
      */
     public function getValidationMessage(string $element, array $parameters = []): string
     {
@@ -40,12 +48,12 @@ abstract class Page extends SymfonyPage implements PageInterface
         return $validationMessage->getText();
     }
 
+    /** @throws ElementNotFoundException */
     protected function waitForElementUpdate(string $element): void
     {
         $element = $this->getElement($element);
 
-        usleep(500000); // we need to sleep, as sometimes the check below is executed faster than the form sets the busy attribute
-        $element->waitFor(1500, fn () => !$element->hasAttribute('busy'));
+        LiveComponentHelper::waitForComponentReload($element);
     }
 
     /**

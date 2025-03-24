@@ -112,7 +112,5 @@ class IndexPage extends BaseIndexPage implements IndexPageInterface
             $autocomplete->getXpath(),
             $value,
         );
-
-//        $this->waitForFormUpdate();
     }
 }
