@@ -54,6 +54,10 @@
         </service>
         <service id="Sylius\Bundle\ApiBundle\Converter\IriToIdentifierConverterInterface" alias="sylius_api.converter.iri_to_identifier" />
 
+        <service id="sylius_api.converter.validator_metadata" class="Sylius\Bundle\ApiBundle\Converter\ValidatorMetadataConverter">
+            <argument type="service" id="validator" />
+        </service>
+
         <service id="sylius_api.mapper.address" class="Sylius\Bundle\ApiBundle\Mapper\AddressMapper" public="true"/>
         <service id="Sylius\Bundle\ApiBundle\Mapper\AddressMapperInterface" alias="sylius_api.mapper.address" />
 

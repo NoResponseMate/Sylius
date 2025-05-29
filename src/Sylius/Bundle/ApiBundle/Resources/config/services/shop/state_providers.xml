@@ -28,6 +28,11 @@
             <tag name="api_platform.state_provider" priority="10"/>
         </service>
 
+        <service id="sylius_api.state_provider.validation.item" class="Sylius\Bundle\ApiBundle\StateProvider\Shop\Common\ValidationProvider">
+            <argument type="service" id="sylius_api.converter.validator_metadata" />
+            <tag name="api_platform.state_provider" priority="10"/>
+        </service>
+
         <service id="sylius_api.state_provider.shop.channel.collection" class="Sylius\Bundle\ApiBundle\StateProvider\Shop\Channel\CollectionProvider" >
             <argument type="service" id="sylius.section_resolver.uri_based" />
             <tag name="api_platform.state_provider" priority="10" />
