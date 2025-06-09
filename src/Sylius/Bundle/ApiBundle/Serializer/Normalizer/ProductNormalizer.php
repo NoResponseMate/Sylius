@@ -18,7 +18,6 @@ use Sylius\Bundle\ApiBundle\SectionResolver\ShopApiSection;
 use Sylius\Bundle\ApiBundle\Serializer\SerializationGroupsSupportTrait;
 use Sylius\Bundle\CoreBundle\SectionResolver\SectionProviderInterface;
 use Sylius\Component\Core\Model\ProductInterface;
-use Sylius\Component\Product\Model\ProductVariantInterface;
 use Sylius\Component\Product\Resolver\ProductVariantResolverInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
@@ -39,6 +38,7 @@ final class ProductNormalizer implements NormalizerInterface, NormalizerAwareInt
         private readonly SectionProviderInterface $sectionProvider,
         private readonly array $serializationGroups,
         private readonly ?AbstractObjectNormalizer $objectNormalizer = null,
+        private readonly array $defaultVariantSerializationGroups = [],
     ) {
         if (null === $this->objectNormalizer) {
             trigger_deprecation(
@@ -60,12 +60,6 @@ final class ProductNormalizer implements NormalizerInterface, NormalizerAwareInt
         $context[self::ALREADY_CALLED] = true;
 
         $data = $this->normalizer->normalize($object, $format, $context);
-
-        $data['variants'] = $object
-            ->getEnabledVariants()
-            ->map(fn (ProductVariantInterface $variant): string => $this->iriConverter->getIriFromResource($variant))
-            ->getValues()
-        ;
 
         $this->populateDefaultVariantData($data, $object, $format, $context);
 
@@ -103,8 +97,12 @@ final class ProductNormalizer implements NormalizerInterface, NormalizerAwareInt
             return;
         }
 
-        if ([] !== $this->objectNormalizer->normalize($defaultVariant, $format, $context)) {
-            $data['defaultVariantData'] = $this->normalizer->normalize($defaultVariant, $format, $context);
+        $context['groups'] = array_merge($context['groups'] ?? [], $this->defaultVariantSerializationGroups);
+
+        if ([] === $this->objectNormalizer->normalize($defaultVariant, $format, $context)) {
+            return;
         }
+
+        $data['defaultVariantData'] = $this->normalizer->normalize($defaultVariant, $format, $context);
     }
 }

@@ -7,7 +7,8 @@
         "ecommerce",
         "store",
         "webshop",
-        "sylius"
+        "sylius",
+        "symfony-ux"
     ],
     "homepage": "https://sylius.com",
     "license": "MIT",
@@ -29,7 +30,7 @@
         "php": "^8.2",
         "sylius/core-bundle": "^2.0",
         "sylius/payum-bundle": "^2.0",
-        "sylius/twig-hooks": "^0.6",
+        "sylius/twig-hooks": "^0.8",
         "sylius/ui-bundle": "^2.0",
         "sylius/theme-bundle": "^2.4",
         "symfony/framework-bundle": "^6.4.1 || ^7.2",
