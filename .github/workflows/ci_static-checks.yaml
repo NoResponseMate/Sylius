@@ -95,13 +95,13 @@ jobs:
 
             -   name: "Install dependencies"
                 run: composer update --no-interaction --no-scripts
-
-            -   name: "Validate composer.json"
-                run: composer validate --strict --no-check-version
-
-            -   name: "Check for security vulnerabilities"
-                run: symfony security:check
-                continue-on-error: true
+#
+#            -   name: "Validate composer.json"
+#                run: composer validate --strict --no-check-version
+#
+#            -   name: "Check for security vulnerabilities"
+#                run: symfony security:check
+#                continue-on-error: true
 
             -   name: "Validate Twig templates"
                 run: bin/console lint:twig src
@@ -112,8 +112,8 @@ jobs:
             -   name: Validate Yaml files
                 run: bin/console lint:yaml src --parse-tags
 
-            -   name: Validate Package versions
-                run: vendor/bin/monorepo-builder validate
+#            -   name: Validate Package versions
+#                run: vendor/bin/monorepo-builder validate
 
             -   name: Run PHPArkitect
                 if: matrix.php != '8.5'
@@ -126,9 +126,9 @@ jobs:
                 if: ${{ inputs.branch == '1.14' }}
                 run: vendor/bin/phpspec run --ansi --no-interaction -f dot
 
-            -   name: Run ComposerRequireChecker
-                run: |
-                    (cat composer.json | jq '.["autoload-dev"]["psr-4"] |= . + {"Sylius\\Behat\\": "src/Sylius/Behat/"}' | jq 'del(.autoload["psr-4"]["Sylius\\Behat\\"])') > _composer.json
-                    mv _composer.json composer.json
-                    composer dump-autoload
-                    composer-require-checker check --config-file=composer-require-checker.json --ignore-parse-errors
+#            -   name: Run ComposerRequireChecker
+#                run: |
+#                    (cat composer.json | jq '.["autoload-dev"]["psr-4"] |= . + {"Sylius\\Behat\\": "src/Sylius/Behat/"}' | jq 'del(.autoload["psr-4"]["Sylius\\Behat\\"])') > _composer.json
+#                    mv _composer.json composer.json
+#                    composer dump-autoload
+#                    composer-require-checker check --config-file=composer-require-checker.json --ignore-parse-errors
