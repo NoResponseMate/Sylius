@@ -16,6 +16,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd"
 >
+    <parameters>
+        <parameter key="sylius.encryption.allowed_classes.gateway_config">true</parameter>
+        <parameter key="sylius.encryption.allowed_classes.payment_request">true</parameter>
+    </parameters>
+
     <services>
         <service id="sylius.checker.gateway_config_encryption" class="Sylius\Bundle\PaymentBundle\Checker\GatewayConfigEncryptionChecker">
             <argument on-invalid="null">%sylius.encryption.disabled_for_factories%</argument>
@@ -24,15 +29,18 @@
 
         <service id="sylius.encrypter" class="Sylius\Component\Payment\Encryption\Encrypter">
             <argument>%env(resolve:SYLIUS_PAYMENT_ENCRYPTION_KEY_PATH)%</argument>
+            <argument on-invalid="ignore">%sylius.encryption.strict_mode%</argument>
         </service>
         <service id="Sylius\Component\Payment\Encryption\EncrypterInterface" alias="sylius.encrypter" />
 
         <service id="sylius.encrypter.payment_request" class="Sylius\Component\Payment\Encryption\PaymentRequestEncrypter">
             <argument type="service" id="sylius.encrypter" />
+            <argument>%sylius.encryption.allowed_classes.payment_request%</argument>
         </service>
 
         <service id="sylius.encrypter.gateway_config" class="Sylius\Component\Payment\Encryption\GatewayConfigEncrypter">
             <argument type="service" id="sylius.encrypter" />
+            <argument>%sylius.encryption.allowed_classes.gateway_config%</argument>
         </service>
 
         <service id="sylius.listener.gateway_config_encryption" class="Sylius\Bundle\PaymentBundle\Listener\GatewayConfigEncryptionListener">
